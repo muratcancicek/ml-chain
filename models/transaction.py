@@ -4,8 +4,8 @@ class Transaction(object):
     def __init__(self, account_address: str, **kwargs):
         self.__init__from_dict(**kwargs)
         self.account_address = account_address
-        self.is_received = self.from_address == account_address
-        self.is_sent = self.to_address == account_address
+        self.is_received = self.to_address == account_address
+        self.is_sent = self.from_address == account_address
         self.is_transfer = self.value != 0
         self.is_contract_creation = self.receipt_contract_address is not None
 
@@ -17,7 +17,7 @@ class Transaction(object):
         self.from_address = kwargs[ck.FROM_ADDRESS]
         self.to_address = kwargs[ck.TO_ADDRESS]
         self.to_address_label = kwargs[ck.TO_ADDRESS_LABEL]
-        self.value = float(kwargs[ck.VALUE])
+        self.value = float(kwargs[ck.VALUE]) / 10**18
         self.gas = kwargs[ck.GAS]
         self.gas_price = float(kwargs[ck.GAS_PRICE])
         self.input = kwargs[ck.INPUT]
