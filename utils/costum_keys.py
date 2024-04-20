@@ -12,7 +12,7 @@ class CustomKeys:
     ADDRESS = 'address'
     FLAG = 'flag'
     LABEL_SOURCE = 'label_source'
-    DATA_SOURCE = 'update_source'
+    DATA_SOURCE = 'data_source'
     AVG_MIN_BETWEEN_SENT_TNX = 'avg_min_between_sent_tnx'
     AVG_MIN_BETWEEN_RECEIVED_TNX = 'avg_min_between_received_tnx'
     TIME_DIFF_BETWEEN_FIRST_AND_LAST_MINS = 'time_diff_between_first_and_last_mins'
