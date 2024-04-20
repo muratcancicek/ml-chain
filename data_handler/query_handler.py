@@ -21,8 +21,13 @@ class QueryHandler:
         return result
     
     def get_wallet_transactions(self, address, chain = 'eth', order = 'DESC'):
-        transactions = evm_api.transaction.get_wallet_transactions(
-            api_key=self.__api_keys[ck.MORALIS], 
-            params={ 'chain': chain, 'order': order,  'address': address },
+        params = { 'chain': chain, 'order': order,  'address': address }
+        transactions = []
+        while ck.CURSOR not in params or params[ck.CURSOR]:
+            page = evm_api.transaction.get_wallet_transactions(
+                api_key=self.__api_keys[ck.MORALIS], 
+                params=params,
             )
-        return transactions[ck.RESULT]
+            transactions.extend(page[ck.RESULT])
+            params[ck.CURSOR] = page[ck.CURSOR]
+        return transactions

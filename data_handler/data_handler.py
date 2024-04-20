@@ -73,13 +73,17 @@ class DataHandler(object):
         print("\nDataset saved successfully.")
         return
 
-    def save_updated_base_dataset(self):
-        base_dataset = self.read_base_dataset()
-        base_dataset = base_dataset[
-            (base_dataset[ck.FLAG] == ck.NEGATIVE_FLAG) |
-            (base_dataset[ck.FLAG] == ck.KAGGLE_LABELED_BOT_FLAG)
-            ]
+    def save_updated_dataset(self, base_dataset):
         addresses = base_dataset[ck.ADDRESS].tolist()
         flags = base_dataset[ck.FLAG].tolist()
         self.save_dataset_from_addresses(addresses, flags)
+        return
+
+    def save_mev_bots_in_base_dataset(self):
+        base_dataset = self.read_base_dataset()
+        base_dataset = base_dataset[
+            (base_dataset[ck.FLAG] == ck.MEV_BOT_FLAG) |
+            (base_dataset[ck.FLAG] == ck.SPAM_FLAG)
+            ]
+        self.save_updated_dataset(base_dataset)
         return
