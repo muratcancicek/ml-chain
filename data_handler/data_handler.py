@@ -85,5 +85,13 @@ class DataHandler(object):
             (base_dataset[ck.FLAG] == ck.MEV_BOT_FLAG) |
             (base_dataset[ck.FLAG] == ck.SPAM_FLAG)
             ]
-        self.save_updated_dataset(base_dataset)
+        length = len(base_dataset)
+        i = 0
+        subset_size = 50
+        while i < length:
+            subset = base_dataset[i:i+subset_size]
+            addresses = subset[ck.ADDRESS].tolist()
+            flags = subset[ck.FLAG].tolist()
+            self.save_dataset_from_addresses(addresses, flags)
+            i += subset_size
         return
