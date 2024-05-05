@@ -40,7 +40,7 @@ class BotDetectionTrainer:
         model.fit(
             train_x, 
             train_y, 
-            epochs=2, 
+            epochs=30, 
             batch_size=32, 
             class_weight=class_weights,
         )
