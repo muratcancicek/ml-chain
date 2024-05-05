@@ -40,7 +40,7 @@ class BotDetectionTrainer:
         model.fit(
             train_x, 
             train_y, 
-            epochs=30, 
+            epochs=2, 
             batch_size=32, 
             class_weight=class_weights,
         )
@@ -57,7 +57,7 @@ class BotDetectionTrainer:
         auc_roc = roc_auc_score(test_y, predictions)
         return accuracy, tn, fp, fn, tp, auc_pr, auc_roc
 
-    def __calculate_mcc(tp, tn, fp, fn):
+    def __calculate_mcc(self, tp, tn, fp, fn):
         numerator = tp * tn - fp * fn
         denominator = sqrt((tp + fp) * (tp + fn) * (tn + fp) * (tn + fn))
         mcc = numerator / denominator if denominator else 0
