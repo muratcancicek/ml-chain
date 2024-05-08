@@ -93,3 +93,13 @@ class CustomKeys:
     ERC20_CODE = 'erc20_code'
     ERC20_FUNCTION = 'erc20_function'
     IS_ERC20 = 'is_erc20'
+    
+    #Stats Keys
+    NFTS = 'nfts'
+    COLLECTIONS = 'collections'
+    TOTAL = 'total'
+    NFT_TRANSFERS = 'nft_transfers'
+    TOKEN_TRANSFERS = 'token_transfers'
+    TOTAL_TRANSACTIONS = 'total_transactions'
+    TOTAL_NFT_TRANSFERS = 'total_nft_transfers'
+    TOTAL_TOKEN_TRANSFERS = 'total_token_transfers'

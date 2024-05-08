@@ -2,7 +2,6 @@ from moralis import evm_api
 import json
 from utils.costum_keys import CustomKeys as ck
 
-
 class QueryHandler:
     def __init__(self, path_prefix = ''):
         self.__path_prefix = path_prefix
@@ -31,3 +30,11 @@ class QueryHandler:
             transactions.extend(page[ck.RESULT])
             params[ck.CURSOR] = page[ck.CURSOR]
         return transactions
+    
+    def get_wallet_stats(self, address, chain = "eth"):
+        params = { 'chain': chain, 'address': address}
+        result = evm_api.wallets.get_wallet_stats(
+            api_key = self.__api_keys[ck.MORALIS],
+            params = params
+        )
+        return result

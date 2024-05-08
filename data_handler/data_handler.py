@@ -6,6 +6,7 @@ from data_handler.query_handler import QueryHandler
 from utils.costum_keys import CustomKeys as ck
 from models.transaction import Transaction
 from models.account import Account
+from models.stats import WalletStats
 
 class DataHandler(object):
     def __init__(self, path_prefix = ''):
@@ -66,11 +67,8 @@ class DataHandler(object):
                 print(f"\nError processing address: {a}")
                 print(e)
                 continue
-        now_str = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
         dataset = pd.DataFrame(accounts)
-        prefix = self.__path_prefix
-        dataset.to_csv(f'{prefix}data/dataset_{now_str}.csv', index=False)
-        print("\nDataset saved successfully.")
+        self.save_dataset(dataset,"dataset")
         return
 
     def save_updated_dataset(self, base_dataset):
@@ -95,3 +93,34 @@ class DataHandler(object):
             self.save_dataset_from_addresses(addresses, flags)
             i += subset_size
         return
+
+    def query_stats(self,address):
+        stats = self.__query_handler.get_wallet_stats(address)
+        return WalletStats(address,**stats)
+
+    def save_stats_from_addresses(self,addresses):
+        all_stats = []
+        total_address = len(addresses)
+        for i in range(total_address):
+            address = addresses[i]
+            try:
+                wallet_stat = self.query_stats(address).to_dataset_row()
+                all_stats.append(wallet_stat)
+                print(f"Proceed in {i+1}/{total_address}")
+            except Exception as e:
+                print(f"\nError {e} processing in address {address}")
+                continue
+        dataset = pd.DataFrame(all_stats)
+        self.save_dataset(dataset,"stats")
+        return
+    
+    def save_stats_for_base_dataset(self,start_ind = 0,end_ind = None):
+        base_dataset = self.read_base_dataset()
+        base_addresses = base_dataset.iloc[start_ind:end_ind][ck.ADDRESS].to_list()
+        self.save_stats_from_addresses(base_addresses)
+        
+    def save_dataset(self,dataset: pd.DataFrame, dataset_name: str):
+        now_str = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+        prefix = self.__path_prefix
+        dataset.to_csv(f'{prefix}data/{dataset_name}_{now_str}.csv', index=False)
+        print("\nWallet stats saved successfully.")
