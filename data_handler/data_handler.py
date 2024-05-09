@@ -86,6 +86,7 @@ class DataHandler(object):
             except Exception as e:
                 print(f"\nError processing address: {a}")
                 print(e)
+                self.save_error_address(a)
                 continue
         dataset = pd.DataFrame(accounts)
         self.save_dataset(dataset,"data/mev_bots/dataset")
@@ -140,6 +141,7 @@ class DataHandler(object):
                 print(f"\rProceed in {i+1}/{total_address}",end="")
             except Exception as e:
                 print(f"\nError {e} processing in address {address}")
+                self.save_error_address(address)
                 continue
         dataset = pd.DataFrame(all_stats)
         self.save_dataset(dataset,"data/stats")
@@ -156,3 +158,6 @@ class DataHandler(object):
         dataset.to_csv(f'{prefix}{save_address}_{now_str}.csv', index=False)
         print("\nDataset saved successfully.")
         
+    def save_error_address(self,address):
+        with open("data/mev_bots/error_addresses.txt","w") as error_addresses:
+            error_addresses.write(f"\n{address}")
