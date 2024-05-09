@@ -6,6 +6,7 @@ class CustomKeys:
     KAGGLE_LABELED_BOT_FLAG = 1
     MEV_BOT_FLAG = 2
     SPAM_FLAG = 3
+    QUERY_TIME = 'query_time'
 
     # Account keys
     TRANSACTIONS = 'transactions'
@@ -103,3 +104,4 @@ class CustomKeys:
     TOTAL_TRANSACTIONS = 'total_transactions'
     TOTAL_NFT_TRANSFERS = 'total_nft_transfers'
     TOTAL_TOKEN_TRANSFERS = 'total_token_transfers'
+    
