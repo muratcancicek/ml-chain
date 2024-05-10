@@ -159,5 +159,5 @@ class DataHandler(object):
         print("\nDataset saved successfully.")
         
     def save_error_address(self,address):
-        with open("data/mev_bots/error_addresses.txt","w") as error_addresses:
+        with open("data/error_addresses.txt","a") as error_addresses:
             error_addresses.write(f"\n{address}")
