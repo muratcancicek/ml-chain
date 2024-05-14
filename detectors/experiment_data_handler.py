@@ -10,7 +10,7 @@ class ExperimentDataHandler(object):
         self.__columns_to_drop = self.__get_columns_to_drop()
         self.__base_feature_names = self.__get_base_feature_names()
         self.__use_base_features = True
-        self.__positive_flags = [ck.KAGGLE_LABELED_BOT_FLAG]
+        self.__positive_flags = [ck.MEV_BOT_FLAG]
         self.__nagative_flags = [ck.NEGATIVE_FLAG]
 
     def __get_columns_to_drop(self):
