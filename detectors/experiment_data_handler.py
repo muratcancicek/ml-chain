@@ -11,7 +11,7 @@ class ExperimentDataHandler(object):
         self.__base_feature_names = self.__get_base_feature_names()
         self.__use_base_features = True
         self.__positive_flags = [ck.MEV_BOT_FLAG]
-        self.__nagative_flags = [ck.NEGATIVE_FLAG]
+        self.__nagative_flags = [ck.NEGATIVE_FLAG,ck.KAGGLE_LABELED_BOT_FLAG]
 
     def __get_columns_to_drop(self):
         return [
@@ -44,6 +44,15 @@ class ExperimentDataHandler(object):
             ck.TOTAL_ETHER_BALANCE,            
         ]
 
+    def __rearange_y_parameters(self,y_sample):
+        y_rearanged = np.zeros(len(y_sample))
+        for i,value in enumerate(y_sample):
+            if(value in self.__nagative_flags):
+                y_rearanged[i] = 0.0
+            elif(value in self.__positive_flags):
+                y_rearanged[i] = 1.0
+        return y_rearanged
+    
     def __filter_data(self):
         df = self.__data.drop(columns=self.__columns_to_drop).astype(np.float64)
         if self.__use_base_features:
@@ -80,7 +89,9 @@ class ExperimentDataHandler(object):
         scaler = StandardScaler()
         train_x_scaled = scaler.fit_transform(train_x)
         test_x_scaled = scaler.transform(test_x)
-        return train_x_scaled, train_y, test_x_scaled, test_y
+        train_y_rearanged = self.__rearange_y_parameters(train_y)
+        test_y_rearanged = self.__rearange_y_parameters(test_y)
+        return train_x_scaled, train_y_rearanged, test_x_scaled, test_y_rearanged
 
     def prepare_fold_sets(self, randomize: bool = True):
         individual_folds = self.__split_folds(randomize)

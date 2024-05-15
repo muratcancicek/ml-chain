@@ -29,12 +29,6 @@ class BotDetectionTrainer:
             )
         return model
 
-    def __rearrange_y_parameters(self,train_y):
-        unique_values = list(np.unique(train_y))
-        for i,value in enumerate(train_y):
-            index_of_value = unique_values.index(value)
-            train_y[i] = index_of_value
-        return train_y
     def __train_model(self, train_x, train_y):
         model = self.__get_model(train_x.shape[1])
         class_weights = class_weight.compute_class_weight(
@@ -53,8 +47,6 @@ class BotDetectionTrainer:
         return model
 
     def __evaluate_model(self, train_x, train_y, test_x, test_y):
-        train_y = self.__rearrange_y_parameters(train_y)
-        test_y = self.__rearrange_y_parameters(test_y)
         model = self.__train_model(train_x, train_y)
         predictions = model.predict(test_x)
         predictions = [1 if p > 0.5 else 0 for p in predictions]
