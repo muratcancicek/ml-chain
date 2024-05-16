@@ -2,47 +2,18 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 from utils.costum_keys import CustomKeys as ck
+from data_handler.meta_data_handler import MetaDataHandler
 
 class ExperimentDataHandler(object):
     def __init__(self, path_prefix: str = ''):
         self.__path_prefix = path_prefix
+        self.__metadata_handler = MetaDataHandler("data/experiment.json")
         self.__data = pd.read_csv(f'{self.__path_prefix}data/uxly_dataset.csv')
-        self.__columns_to_drop = self.__get_columns_to_drop()
-        self.__base_feature_names = self.__get_base_feature_names()
-        self.__use_base_features = True
-        self.__positive_flags = [ck.MEV_BOT_FLAG]
-        self.__nagative_flags = [ck.NEGATIVE_FLAG,ck.KAGGLE_LABELED_BOT_FLAG]
-
-    def __get_columns_to_drop(self):
-        return [
-            ck.ADDRESS, 
-            ck.ERC20_MOST_REC_TOKEN_TYPE, 
-            ck.ERC20_MOST_SENT_TOKEN_TYPE,
-            ck.DATA_SOURCE,
-            ck.LABEL_SOURCE,
-            ]
-
-    def __get_base_feature_names(self):
-        return [
-            ck.FLAG,
-            ck.AVG_MIN_BETWEEN_SENT_TNX,
-            ck.AVG_MIN_BETWEEN_RECEIVED_TNX,
-            ck.TIME_DIFF_BETWEEN_FIRST_AND_LAST_MINS,
-            ck.SENT_TNX,
-            ck.RECEIVED_TNX,
-            ck.UNIQUE_RECEIVED_FROM_ADDRESSES,
-            ck.UNIQUE_SENT_TO_ADDRESSES,
-            ck.MIN_VALUE_RECEIVED,
-            ck.MAX_VALUE_RECEIVED,
-            ck.AVG_VAL_RECEIVED,
-            ck.MIN_VAL_SENT,
-            ck.MAX_VAL_SENT,
-            ck.AVG_VAL_SENT,
-            ck.TOTAL_TRANSACTIONS_INCLUDING_TNX_TO_CREATE_CONTRACT,
-            ck.TOTAL_ETHER_SENT,
-            ck.TOTAL_ETHER_RECEIVED,
-            ck.TOTAL_ETHER_BALANCE,            
-        ]
+        self.__columns_to_drop = self.__metadata_handler.get_columns_to_drop()
+        self.__base_feature_names = self.__metadata_handler.get_base_features()
+        self.__use_base_features = self.__metadata_handler.get_use_base_features()
+        self.__positive_flags = self.__metadata_handler.get_positive_flags()
+        self.__nagative_flags = self.__metadata_handler.get_negative_flags()
 
     def __rearange_y_parameters(self,y_sample):
         y_rearanged = np.zeros(len(y_sample))

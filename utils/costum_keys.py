@@ -105,3 +105,15 @@ class CustomKeys:
     TOTAL_NFT_TRANSFERS = 'total_nft_transfers'
     TOTAL_TOKEN_TRANSFERS = 'total_token_transfers'
     
+    #experiment.json columns
+    ARCHITECTURE = 'architecture'
+    EPOCHS = 'epochs'
+    BATCH_SIZE = 'batch_size'
+    LEARNING_RATE = 'learning_rate'
+    DROPOUT = 'dropout'
+    POSITIVE_FLAGS = 'positive_flags'
+    NEGATIVE_FLAGS = 'negative_flags'
+    USE_BASE_FEATURES = 'use_base_features'
+    COLUMNS_TO_DROP = 'columns_to_drop'
+    BASE_FEATURES = 'base_features'
+    CROSS_VALIDATION_COUNT = 'cross_validation_count'
