@@ -6,6 +6,7 @@ class CustomKeys:
     KAGGLE_LABELED_BOT_FLAG = 1
     MEV_BOT_FLAG = 2
     SPAM_FLAG = 3
+    QUERY_TIME = 'query_time'
 
     # Account keys
     TRANSACTIONS = 'transactions'
@@ -93,3 +94,26 @@ class CustomKeys:
     ERC20_CODE = 'erc20_code'
     ERC20_FUNCTION = 'erc20_function'
     IS_ERC20 = 'is_erc20'
+    
+    #Stats Keys
+    NFTS = 'nfts'
+    COLLECTIONS = 'collections'
+    TOTAL = 'total'
+    NFT_TRANSFERS = 'nft_transfers'
+    TOKEN_TRANSFERS = 'token_transfers'
+    TOTAL_TRANSACTIONS = 'total_transactions'
+    TOTAL_NFT_TRANSFERS = 'total_nft_transfers'
+    TOTAL_TOKEN_TRANSFERS = 'total_token_transfers'
+    
+    #experiment.json columns
+    ARCHITECTURE = 'architecture'
+    EPOCHS = 'epochs'
+    BATCH_SIZE = 'batch_size'
+    LEARNING_RATE = 'learning_rate'
+    DROPOUT = 'dropout'
+    POSITIVE_FLAGS = 'positive_flags'
+    NEGATIVE_FLAGS = 'negative_flags'
+    USE_BASE_FEATURES = 'use_base_features'
+    COLUMNS_TO_DROP = 'columns_to_drop'
+    BASE_FEATURES = 'base_features'
+    CROSS_VALIDATION_COUNT = 'cross_validation_count'
