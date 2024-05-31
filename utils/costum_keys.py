@@ -117,3 +117,17 @@ class CustomKeys:
     COLUMNS_TO_DROP = 'columns_to_drop'
     BASE_FEATURES = 'base_features'
     CROSS_VALIDATION_COUNT = 'cross_validation_count'
+    
+    CHAIN = 'chain'
+    ORDER = 'order'
+    ADDRESS = 'address'
+    CONTRACT_ADDRESSES = 'contract_addresses'
+    TOTAL = 'total'
+    NFTS = 'nfts'
+    COLLECTIONS = 'collections'
+    TRANSACTIONS = 'transactions'
+    NFT_TRANSFERS = 'nft_transfers'
+    TOKEN_TRANSFERS = 'token_transfers'
+
+    CLAIMED = 'claimed'
+    WALLET_ADDRESS = 'wallet_address'

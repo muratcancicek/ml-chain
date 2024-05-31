@@ -29,6 +29,7 @@ class QueryHandler:
             )
             transactions.extend(page[ck.RESULT])
             params[ck.CURSOR] = page[ck.CURSOR]
+            break
         return transactions
     
     def get_wallet_stats(self, address, chain = "eth"):
