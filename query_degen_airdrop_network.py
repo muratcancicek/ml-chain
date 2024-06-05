@@ -150,9 +150,11 @@ def main():
     contracts = ['0x4ed4e862860bed51a9570b96d89af5e1b0efefed']
     save_addresses_with_stats(degree_0_addresses, handler, 'degree_0', from_date, to_date)
     process_layers(
-        handler, degree_0_addresses, contracts, 0, from_date, to_date, True, 1,
+        handler, degree_0_addresses, contracts, 0, from_date, to_date, True, 5,
         )
-    # process_layers(handler, degree_0_addresses, contracts, 0, False, 5, k)
+    process_layers(
+        handler, degree_0_addresses, contracts, 0, from_date, to_date, False,5,
+        )
     print('Done')
 
 if __name__ == '__main__':
