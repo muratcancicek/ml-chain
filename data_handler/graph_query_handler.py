@@ -63,11 +63,15 @@ class GraphQueryHandler:
             params[ck.FROM_DATE] = from_date
         if to_date != '':
             params[ck.TO_DATE] = to_date
-        result = evm_api.wallets.get_wallet_stats(
-            api_key = self.__api_keys[ck.MORALIS],
-            params = params
-        )
-        return result
+        try:
+            result = evm_api.wallets.get_wallet_stats(
+                api_key = self.__api_keys[ck.MORALIS],
+                params = params
+            )
+            return result
+        except Exception as e:
+            print(e)
+            return {ck.TRANSACTIONS: {ck.TOTAL: 99999999991212}}
 
     def query_wallet_stats_as_df(self, addresses: list,
         from_date: str = '',
