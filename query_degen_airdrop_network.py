@@ -19,13 +19,15 @@ def save_addresses_with_stats(
         addresses: list,
         handler: GraphQueryHandler, 
         name: str = 'airdrop1',
+        from_date: str = '',
+        to_date: str = '',
     ):
     path = f'{DEGEN_AIRDROP_FOLDER}/network/{name}_with_stats.csv'
     if os.path.exists(path):
         return pd.read_csv(path)
     bt = datetime.now().isoformat()
     print(f'{bt}: Querying stats for {len(addresses)}.')
-    stats = handler.query_wallet_stats_as_df(addresses)
+    stats = handler.query_wallet_stats_as_df(addresses, from_date, to_date)
     stats.to_csv(path, index=False)
     et = datetime.now().isoformat()
     print(f'{et}: Queried stats for {len(addresses)}.')
@@ -36,13 +38,15 @@ def get_n_claimers(
         n = 50, 
         name: str = 'airdrop1',
         sample = True,
+        from_date: str = '',
+        to_date: str = '',
     ):
     claimers_name = f'{n}_claimers_from_{name}'
     addresses = get_airdrop_addresses(name)
     if sample:
         addresses = get_airdrop_addresses(name)
         claimers_n = addresses.sample(n)
-        save_addresses_with_stats(claimers_n, handler, claimers_name)
+        save_addresses_with_stats(claimers_n, handler, claimers_name, from_date, to_date)
         return claimers_n
     else:
         p = f'{DEGEN_AIRDROP_FOLDER}/network/{claimers_name}_with_stats.csv'
@@ -60,12 +64,16 @@ def save_degree_transactions(
         addresses: list, 
         contracts: list, 
         degree: str,
+        from_date: str = '',
+        to_date: str = '',
     ):
     received_path = f'{DEGEN_AIRDROP_FOLDER}/network/{degree}_received.json'
     sent_path = f'{DEGEN_AIRDROP_FOLDER}/network/{degree}_sent.json'
     if os.path.exists(received_path) and os.path.exists(sent_path):
         return read_degree_transactions(degree)
-    received, sent = handler.get_wallet_transactions(addresses, contracts)
+    received, sent = handler.get_wallet_transactions(
+        addresses, contracts, from_date, to_date,
+    )
     json.dump(received, open(received_path, 'w'))
     json.dump(sent, open(sent_path, 'w'))
     return received, sent
@@ -76,10 +84,14 @@ def process_degree(
         contracts: list, 
         degree: str, 
         save = True,
+        from_date: str = '',
+        to_date: str = '',
     ):
     tnxs = None
     if save:
-        tnxs = save_degree_transactions(handler, addresses, contracts, degree)
+        tnxs = save_degree_transactions(
+            handler, addresses, contracts, degree, from_date, to_date,
+        )
     else:
         tnxs = read_degree_transactions(degree)
     received, sent = tnxs
@@ -94,6 +106,8 @@ def process_layers(
         source_addresses: list, 
         contracts: list, 
         degree: int, 
+        from_date: str = '',
+        to_date: str = '',
         parent = True,
         degree_limit: int = 5,
         edge_limit: int = None,
@@ -104,7 +118,7 @@ def process_layers(
     if degree != 0:
             degree_name += '_parent' if parent else '_child'
     degree_args = (handler, source_addresses, contracts, degree_name, True)
-    parents, children = process_degree(*degree_args)
+    parents, children = process_degree(*degree_args, from_date, to_date)
     et = datetime.now().isoformat()
     print(f'{et}: Processed degree {degree}.')
     random.shuffle(parents); random.shuffle(children)
@@ -113,22 +127,31 @@ def process_layers(
     if degree >= degree_limit:
          return
     if parent:
-        save_addresses_with_stats(parents, handler, degree_name)
-        process_layers(handler, parents, contracts, degree + 1, parent)
+        save_addresses_with_stats(parents, handler, degree_name, from_date, to_date)
+        process_layers(
+            handler, parents, contracts, degree + 1, 
+            from_date, to_date, True, degree_limit, edge_limit,
+        )
     else:
-        save_addresses_with_stats(children, handler, degree_name)
-        process_layers(handler, children, contracts, degree + 1, parent)
+        save_addresses_with_stats(children, handler, degree_name, from_date, to_date)
+        process_layers(handler, children, contracts, degree + 1,
+            from_date, to_date, False, degree_limit, edge_limit,
+        )
     return
 
 def main():
     n, k = 50, None
     name = 'airdrop1'
     handler = GraphQueryHandler()
-    claimers_n = get_n_claimers(handler, n, name, sample = False)
+    from_date = '2023-12-25T00:00:00Z'
+    to_date = '2024-06-01T00:00:00Z'
+    claimers_n = get_n_claimers(handler, n, name, sample = False, from_date = from_date, to_date = to_date)
     degree_0_addresses = claimers_n['wallet_address'].values
     contracts = ['0x4ed4e862860bed51a9570b96d89af5e1b0efefed']
-    save_addresses_with_stats(degree_0_addresses, handler, 'degree_0')
-    process_layers(handler, degree_0_addresses, contracts, 0, True, 1, k)
+    save_addresses_with_stats(degree_0_addresses, handler, 'degree_0', from_date, to_date)
+    process_layers(
+        handler, degree_0_addresses, contracts, 0, from_date, to_date, True, 1,
+        )
     # process_layers(handler, degree_0_addresses, contracts, 0, False, 5, k)
     print('Done')
 

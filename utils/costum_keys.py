@@ -131,3 +131,5 @@ class CustomKeys:
 
     CLAIMED = 'claimed'
     WALLET_ADDRESS = 'wallet_address'
+    FROM_DATE = 'from_date'
+    TO_DATE = 'to_date'

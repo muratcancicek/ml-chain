@@ -17,6 +17,8 @@ class GraphQueryHandler:
             self, 
             address: str, 
             contract_addresses: list, 
+            from_date: str = '',
+            to_date: str = '',
             chain: str = 'eth',
             order: str = 'DESC',
         ):
@@ -26,6 +28,10 @@ class GraphQueryHandler:
             ck.ADDRESS: address,
             ck.CONTRACT_ADDRESSES: contract_addresses,
         }
+        if from_date != '':
+            params[ck.FROM_DATE] = from_date
+        if to_date != '':
+            params[ck.TO_DATE] = to_date
         transactions = []
         try:
             while ck.CURSOR not in params or params[ck.CURSOR]:
@@ -35,27 +41,45 @@ class GraphQueryHandler:
                 )
                 transactions.extend(page[ck.RESULT])
                 params[ck.CURSOR] = page[ck.CURSOR]
+                s = f'Queryied {len(transactions)} transactions for {address}.'
+                s += f' Querying next page...'
+                print(s, end='\r')
         except Exception as e:
-            print(e)
-            print(f'Error querying transactions for {address}')
+            if 'Reason: Internal Server Error' in str(e):
+                print(f'Internal Server Error querying tnxs for {address}')
+            else:
+                print(e)
         return transactions
 
-    def get_wallet_stats(self, address: str, chain: str = "eth"):
+    def get_wallet_stats(
+            self, 
+            address: str, 
+            chain: str = "eth", 
+            from_date: str = '', 
+            to_date: str = '',
+            ):
         params = { ck.CHAIN: chain, ck.ADDRESS: address}
+        if from_date != '':
+            params[ck.FROM_DATE] = from_date
+        if to_date != '':
+            params[ck.TO_DATE] = to_date
         result = evm_api.wallets.get_wallet_stats(
             api_key = self.__api_keys[ck.MORALIS],
             params = params
         )
         return result
 
-    def query_wallet_stats_as_df(self, addresses: list):
+    def query_wallet_stats_as_df(self, addresses: list,
+        from_date: str = '',
+        to_date: str = '',
+        ):
         stats = []
         i = 0
         for address in addresses:
             i += 1
             print(f'Querying stats for {i}/{len(addresses)} adresses',end='\r')
             try:
-                r = self.get_wallet_stats(address)
+                r = self.get_wallet_stats(address, from_date=from_date, to_date=to_date)
                 rd = {
                     ck.ADDRESS: address,
                     ck.NFTS: int(r[ck.NFTS]), 
@@ -76,14 +100,27 @@ class GraphQueryHandler:
             self,
             addresses: list, 
             contract_addresses: list,
+            from_date: str = '',
+            to_date: str = '',
         ):
         received_transactions = {}
         sent_transactions = {}
         i = 0
         for address in addresses:
             i += 1
-            print(f'Querying tnx for {i}/{len(addresses)} adresses', end='\r')
-            tnxs = self.query_wallet_transactions(address, contract_addresses)
+            stats = self.get_wallet_stats(
+                address, from_date=from_date, to_date=to_date,
+            )
+            if int(stats[ck.TRANSACTIONS][ck.TOTAL]) > 50000:
+                print(f'Skipping {address} because of too many transactions')
+                continue
+            print(f'Querying tnx for {i}/{len(addresses)} adresses')
+            tnxs = self.query_wallet_transactions(
+                address, 
+                contract_addresses,
+                from_date,
+                to_date,
+            )
             for tnx in tnxs:
                 if tnx['to_address'] == address:
                     if address not in received_transactions:
