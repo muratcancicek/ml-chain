@@ -35,7 +35,6 @@ class GraphQueryHandler:
                 )
                 transactions.extend(page[ck.RESULT])
                 params[ck.CURSOR] = page[ck.CURSOR]
-                break
         except Exception as e:
             print(e)
             print(f'Error querying transactions for {address}')
