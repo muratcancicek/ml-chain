@@ -4,7 +4,7 @@ import random
 import json
 import os
 
-from data_handler.graph_query_handler import GraphQueryHandler
+from airdrop_analysis.data_handler.graph_query_handler import GraphQueryHandler
 from utils.costum_keys import CustomKeys as ck
 
 DEGEN_AIRDROP_FOLDER = 'data/datasets/degen_airdrop_claims'
