@@ -9,7 +9,7 @@ class GraphQueryHandler:
         self.__api_keys =  self.__read_api_key()
 
     def __read_api_key(self):
-        with open(self.__path_prefix + 'data/api_keys.json', 'r') as file:
+        with open(self.__path_prefix + 'airdrop_analysis/data/keys/api_keys.json', 'r') as file:
             self.__api_keys = json.loads(file.read())
         return self.__api_keys
     
@@ -19,7 +19,7 @@ class GraphQueryHandler:
             contract_addresses: list, 
             from_date: str = '',
             to_date: str = '',
-            chain: str = 'eth',
+            chain: str = 'base',
             order: str = 'DESC',
         ):
         params = { 
@@ -35,7 +35,7 @@ class GraphQueryHandler:
         transactions = []
         try:
             while ck.CURSOR not in params or params[ck.CURSOR]:
-                page = evm_api.transaction.get_wallet_transactions(
+                page = evm_api.token.get_wallet_token_transfers(
                     api_key=self.__api_keys[ck.MORALIS], 
                     params=params,
                 )
@@ -54,7 +54,7 @@ class GraphQueryHandler:
     def get_wallet_stats(
             self, 
             address: str, 
-            chain: str = "eth", 
+            chain: str = "base", 
             from_date: str = '', 
             to_date: str = '',
             ):
@@ -112,12 +112,12 @@ class GraphQueryHandler:
         i = 0
         for address in addresses:
             i += 1
-            stats = self.get_wallet_stats(
-                address, from_date=from_date, to_date=to_date,
-            )
-            if int(stats[ck.TRANSACTIONS][ck.TOTAL]) > 50000:
-                print(f'Skipping {address} because of too many transactions')
-                continue
+            # stats = self.get_wallet_stats(
+            #     address, from_date=from_date, to_date=to_date,
+            # )
+            # if int(stats[ck.TRANSACTIONS][ck.TOTAL]) > 5000000:
+            #     print(f'Skipping {address} because of too many transactions')
+            #     continue
             print(f'Querying tnx for {i}/{len(addresses)} adresses')
             tnxs = self.query_wallet_transactions(
                 address, 

@@ -7,7 +7,7 @@ import os
 from airdrop_analysis.data_handler.graph_query_handler import GraphQueryHandler
 from utils.costum_keys import CustomKeys as ck
 
-DEGEN_AIRDROP_FOLDER = 'data/datasets/degen_airdrop_claims'
+DEGEN_AIRDROP_FOLDER = 'airdrop_analysis/data/degen_airdrop_claims'
 
 def get_airdrop_addresses(name: str = 'airdrop1'):
     df = pd.read_csv(f'{DEGEN_AIRDROP_FOLDER}/csv/{name}_claims.csv') 
@@ -97,6 +97,7 @@ def process_degree(
     received, sent = tnxs
     parents = [t[ck.FROM_ADDRESS] for tnxs in received.values() for t in tnxs]
     children = [t[ck.TO_ADDRESS] for tnxs in sent.values() for t in tnxs]
+    parents = list(set(parents)); children = list(set(children))
     t = f'{len(parents)} parents and {len(children)} children for {degree}.'
     print(t)
     return parents, children
@@ -127,13 +128,13 @@ def process_layers(
     if degree >= degree_limit:
          return
     if parent:
-        save_addresses_with_stats(parents, handler, degree_name, from_date, to_date)
+        # save_addresses_with_stats(parents, handler, degree_name, from_date, to_date)
         process_layers(
             handler, parents, contracts, degree + 1, 
             from_date, to_date, True, degree_limit, edge_limit,
         )
     else:
-        save_addresses_with_stats(children, handler, degree_name, from_date, to_date)
+        # save_addresses_with_stats(children, handler, degree_name, from_date, to_date)
         process_layers(handler, children, contracts, degree + 1,
             from_date, to_date, False, degree_limit, edge_limit,
         )
@@ -143,12 +144,12 @@ def main():
     n, k = 50, None
     name = 'airdrop1'
     handler = GraphQueryHandler()
-    from_date = '2023-12-25T00:00:00Z'
-    to_date = '2024-06-01T00:00:00Z'
+    from_date = '2024-01-01T00:00:00Z'
+    to_date = ''
     claimers_n = get_n_claimers(handler, n, name, sample = False, from_date = from_date, to_date = to_date)
     degree_0_addresses = claimers_n['wallet_address'].values
     contracts = ['0x4ed4e862860bed51a9570b96d89af5e1b0efefed']
-    save_addresses_with_stats(degree_0_addresses, handler, 'degree_0', from_date, to_date)
+    # save_addresses_with_stats(degree_0_addresses, handler, 'degree_0', from_date, to_date)
     process_layers(
         handler, degree_0_addresses, contracts, 0, from_date, to_date, True, 5,
         )
